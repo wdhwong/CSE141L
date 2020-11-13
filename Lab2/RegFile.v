@@ -13,11 +13,11 @@
 */
 module RegFile (Clk,WriteEn,RaddrA,RaddrB,Waddr,DataIn,DataOutA,DataOutB);
 	parameter W=8, D=4;  // W = data path width (Do not change); D = pointer width (You may change)
-	input                Clk,
-								WriteEn;
-	input        [D-1:0] RaddrA,				  // address pointers
-								RaddrB,
-								Waddr;
+	input           Clk,
+					WriteEn;
+	input   [D-1:0] RaddrA,				  // address pointers
+					RaddrB,
+					Waddr;
 	input        [W-1:0] DataIn;
 	output reg   [W-1:0] DataOutA;			  
 	output reg   [W-1:0] DataOutB;				
