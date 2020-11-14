@@ -6,8 +6,6 @@
 // Comment:
 // This module does not actually fetch the actual code
 // It is responsible for providing which line number will be read next
-
-
 	 
 module InstFetch(Reset,Start,Clk,Branch,Target,ProgCtr);
 

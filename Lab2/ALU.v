@@ -6,9 +6,7 @@
 // Comment:
 // 
 
-
-   
-module ALU(InputA,InputB,OP,OverflowIn,Out,OverflowOut,Zero);
+module ALU(InputA,InputB,OP,OverflowIn,Out,OverflowOut);
 
   input [ 7:0] InputA;
   input [ 7:0] InputB;
@@ -16,7 +14,6 @@ module ALU(InputA,InputB,OP,OverflowIn,Out,OverflowOut,Zero);
   input OverflowIn;
   output reg [7:0] Out; // logic in SystemVerilog
   output reg OverflowOut;
-  output reg Zero;
 
   wire [7:0] sub;
   assign sub = InputA - InputB;
@@ -70,16 +67,6 @@ module ALU(InputA,InputB,OP,OverflowIn,Out,OverflowOut,Zero);
     end
     default: Out = 0;
     endcase
-  
-  end 
-
-  always@*							  // assign Zero = !Out;
-  begin
-    case(Out)
-      'b0     : Zero = 1'b1;
-      default : Zero = 1'b0;
-      endcase
   end
-
 
 endmodule

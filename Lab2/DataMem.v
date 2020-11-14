@@ -17,7 +17,7 @@ module DataMem(Clk,Reset,WriteEn,ReadEn,DataAddress,DataIn,DataOut);
                      ReadEn;
   input [7:0]        DataAddress,   // 8-bit-wide pointer to 256-deep memory
                      DataIn;		   // 8-bit-wide data path, also
-  output reg[7:0]    DataOut;
+  output reg [7:0]   DataOut;
 
   reg [7:0] Core[256-1:0];			   // 8x256 two-dimensional array -- the memory itself
 

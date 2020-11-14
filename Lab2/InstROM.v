@@ -12,8 +12,6 @@
 // Currently, it supports 2^11 instructions. 11 bits has been hardcoded.
 // That should be enough for your 3 programs.
 
-
-
 module InstROM (InstAddress, InstOut);
 
   input       [11-1:0] InstAddress;

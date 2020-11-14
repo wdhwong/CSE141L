@@ -1,7 +1,5 @@
 `timescale 1ns/ 1ps
 
-
-
 //Test bench
 //Arithmetic Logic Unit
 /*
@@ -14,7 +12,6 @@
 * equal: is A == B?
 * even: is the output even?
 */
-
 
 module ALU_tb;
 reg [7:0] INPUTA;	// data inputs
