@@ -20,14 +20,14 @@ module ALU_tb;
 reg [7:0] INPUTA;	// data inputs
 reg [7:0] INPUTB;
 reg [3:0] op;	// ALU opcode, part of microcode
-reg [1:0] OverflowIn;
+reg OverflowIn;
 wire[7:0] OUT;
 wire OverflowOut; 
 
 wire Zero;    
 
 reg [ 7:0] expected;
-reg [1:0] expectedOverflow;
+reg expectedOverflow;
 reg [7:0] sub;
  
 // CONNECTION

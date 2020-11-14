@@ -17,12 +17,11 @@ module InstFetch(Reset,Start,Clk,BranchAbs,BranchRelEn,ALU_flag,Target,ProgCtr);
                      BranchAbs,	       // jump unconditionally to Target value	   
                      BranchRelEn,	   // jump conditionally to Target + PC
                      ALU_flag;		   // flag from ALU, e.g. Zero, Carry, Overflow, Negative (from ARM)
-  input       [9:0] Target;		      // jump ... "how high?"
-  output reg[9:0] ProgCtr ;            // the program counter register itself
-  
+  input       [10:0] Target;		      // jump ... "how high?"
+  output reg  [10:0] ProgCtr ;            // the program counter register itself
   
   //// program counter can clear to 0, increment, or jump
-	always
+	always @(posedge Clk)
 	begin 
 		if(Reset)
 		  ProgCtr <= 0;				        // for first program; want different value for 2nd or 3rd
@@ -36,9 +35,7 @@ module InstFetch(Reset,Start,Clk,BranchAbs,BranchRelEn,ALU_flag,Target,ProgCtr);
 		  ProgCtr <= ProgCtr+'b1; 	        // default increment (no need for ARM/MIPS +4. Pop quiz: why?)
 	end
 
-
 endmodule
-
 /* Note about Start: if your programs are spread out, with a gap in your machine code listing, you will want 
 to make Start cause an appropriate jump. If your programs are packed sequentially, such that program 2 begins 
 right after Program 1 ends, then you won't need to do anything special here. 

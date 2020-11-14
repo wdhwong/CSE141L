@@ -12,27 +12,23 @@
 
 module Ctrl (Instruction, Jump, BranchEn);
 
-
   input[ 8:0] Instruction;	   // machine code
-  output reg Jump,
+  output reg  Jump,
               BranchEn;
 
-	// jump on right shift that generates a zero
-	always@*
-	begin
-	  if(Instruction[2:0] ==  3'b111) // assuming 111 is your jump instruction
-		 Jump = 1;
-	  else
-		 Jump = 0;
-		 
-		 if(Instruction[2:0] ==  3'b110 /*AND some other conditions are true*/) // assuming 110 is your branch instruction
-		 BranchEn = 1;
-	  else
-		 BranchEn = 0;
-		 
-		 
-	end
-
+  // jump on right shift that generates a zero
+  always@*
+  begin
+    if(Instruction[2:0] ==  3'b111) // assuming 111 is your jump instruction
+     Jump = 1;
+    else
+     Jump = 0;
+     
+     if(Instruction[2:0] ==  3'b110 /*AND some other conditions are true*/) // assuming 110 is your branch instruction
+     BranchEn = 1;
+    else
+     BranchEn = 0;     
+  end
 
 endmodule
 

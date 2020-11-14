@@ -13,15 +13,15 @@
 //  in general, Output = f(Input); 
 module LUT(Addr, Target);
   
-    input       [ 1:0] Addr;
-	output reg[ 9:0] Target;
+  input       [ 1:0] Addr;
+  output reg  [ 9:0] Target;
 
-	always @*
-	  case(Addr)		  
-		2'b00:    Target = 10'h3ff;  // Ex. -1
-		2'b01:	 Target = 10'h003;
-		2'b10:	 Target = 10'h007;
-		default:  Target = 10'h001;
-	  endcase
+  always @*
+    case(Addr)		  
+      2'b00:    Target = 10'h3ff;  // Ex. -1
+      2'b01:	 Target = 10'h003;
+      2'b10:	 Target = 10'h007;
+      default:  Target = 10'h001;
+    endcase
 
 endmodule
