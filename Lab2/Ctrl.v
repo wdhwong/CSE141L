@@ -24,7 +24,7 @@ module Ctrl (Instruction, BranchEn, RegWrEn, MemWrite, MemRead, IsOverflow, AccW
 
   always@*
   begin
-    if(Instruction[8:8] ==  1'b1) // check type bit
+    if(Instruction[8:8] ==  1'b1) begin // check type bit
       RegWrEn = 0;
       BranchEn = 0;
       MemWrite = 0;
@@ -33,7 +33,7 @@ module Ctrl (Instruction, BranchEn, RegWrEn, MemWrite, MemRead, IsOverflow, AccW
       AccWrEn = 1;
       LookUp = 0;
       Ack = 0;
-    else begin
+    end else begin
       case (Instruction[7:4])
         // add
         4'b0000: begin
@@ -200,6 +200,7 @@ module Ctrl (Instruction, BranchEn, RegWrEn, MemWrite, MemRead, IsOverflow, AccW
           LookUp = 0;
           Ack = 0;
         end
+      endcase
     end
   end
 

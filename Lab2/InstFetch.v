@@ -9,10 +9,10 @@
 	 
 module InstFetch(Reset,Start,Clk,Branch,Target,ProgCtr);
 
-  input              Reset,			  // reset, init, etc. -- force PC to 0 
-                     Start,			  // begin next program in series
-                     Clk,			    // PC can change on pos. edges only
-                     Branch,	  // jump unconditionally to Target value
+  input             Reset,			  // reset, init, etc. -- force PC to 0 
+                    Start,			  // begin next program in series
+                    Clk,			    // PC can change on pos. edges only
+                    Branch;	  // jump unconditionally to Target value
   input       [7:0] Target;		  // jump ... "how high?"
   output reg  [10:0] ProgCtr;		// the program counter register itself
 
@@ -27,8 +27,8 @@ module InstFetch(Reset,Start,Clk,Branch,Target,ProgCtr);
 		  ProgCtr <= 0;				        // for first program; want different value for 2nd or 3rd
 		else if(Start)						    // hold while start asserted; commence when released
 		  ProgCtr <= ProgCtr;
-		else if(Branch)	              // relative branch
-		  ProgCtr <= ProgCtr + offset;
+		else if(Branch)
+		  ProgCtr <= offset;
 		else
 		  ProgCtr <= ProgCtr+'b1;			// default increment (no need for ARM/MIPS +4. Pop quiz: why?)
 	end

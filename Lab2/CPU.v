@@ -16,10 +16,10 @@ module CPU(Reset, Start, Clk,Ack);
   input Clk;			// clock -- posedge used inside design
   output reg Ack;   // done flag from DUT
 
-  wire [10:0] PgmCtr,        // program counter
+  wire [10:0] PgmCtr;        // program counter
   wire [ 8:0] Instruction;   // our 9-bit instruction
   wire [ 7:4] Instr_opcode;  // out 3-bit opcode
-  wire [ 7:0] ReadA, ReadB;  // reg_file outputs
+  wire [ 7:0] AccReg, DstReg;// reg_file outputs
   wire [ 7:0] InA, InB, 	   // ALU operand inputs
               ALU_out;       // ALU result
   wire [ 7:0] LookupValue;   // lookup value
@@ -31,11 +31,11 @@ module CPU(Reset, Start, Clk,Ack);
               RegWrEn,	     // reg_file write enable
               LookUp,        // use lookup table
               IsOverflow,    // 1 if overflow else 0
-              OverflowValue, // value of the overflow register
               OverflowValueN,// value of the overflow register for next cycle
               AccWrEn,       // write to accumulator
               MemToReg,      // store data_memory in reg
               BranchEn;	     // to program counter: branch enable
+  reg  OverflowValue;
   reg  [15:0] CycleCt;	     // standalone; NOT PC!
 
   // Fetch = Program Counter + Instruction ROM
@@ -51,17 +51,17 @@ module CPU(Reset, Start, Clk,Ack);
 
   // Control decoder
   Ctrl Ctrl1 (
-    .Instruction,  // from instr_ROM
+    .Instruction (Instruction),  // from instr_ROM
     // output signals
-    .BranchEn,
-    .RegWrEn,
-    .MemWrite,
-    .MemRead,
-    .IsOverflow,
-    .AccWrEn,
-    .LookUp,
-    .MemToReg,
-    .Ack
+    .BranchEn (BranchEn),
+    .RegWrEn (RegWrEn),
+    .MemWrite (MemWrite),
+    .MemRead (MemRead),
+    .IsOverflow (IsOverflow),
+    .AccWrEn (AccWrEn),
+    .LookUp (LookUp),
+    .MemToReg (MemToReg),
+    .Ack (Ack)
   );
 
   // instruction ROM
@@ -75,12 +75,12 @@ module CPU(Reset, Start, Clk,Ack);
   // Width of register is 8 bits, do not modify
   RegFile #(.W(8),.D(4)) RF1 (
     .Clk       (Clk),
-    .AccWrEn,
+    .AccWrEn   (AccWrEn),
     .WriteEn   (RegWrEn),
     .RaddrA    (Instruction[3:0]),
     .DataIn    (RegWriteValue),
-    .DataOutA  (ReadA),
-    .DataOutB  (ReadB)
+    .DataOutA  (AccReg),
+    .DataOutB  (DstReg)
   );
 
   // used to look up the address to branch to
@@ -89,8 +89,8 @@ module CPU(Reset, Start, Clk,Ack);
     .Target (LookupValue)
   );
 
-  assign InA = ReadA;						                             // connect RF out to ALU in
-  assign InB = LookUp ? LookupValue : ReadB;                 // either the immediate value or the register value
+  assign InA = AccReg;						                             // connect RF out to ALU in
+  assign InB = LookUp ? LookupValue : DstReg;                 // either the immediate value or the register value
   assign Instr_opcode = Instruction[7:4];
   assign RegWriteValue = MemToReg ? MemReadValue : ALU_out;  // either the ALU output or the MemReadValue
 
@@ -106,7 +106,7 @@ module CPU(Reset, Start, Clk,Ack);
 
   // Data Memory
   DataMem DM1(
-    .DataAddress  (ReadA),
+    .DataAddress  (AccReg),
     .WriteEn      (MemWrite),
     .ReadEn       (MemRead),
     .DataIn       (MemWriteValue),
