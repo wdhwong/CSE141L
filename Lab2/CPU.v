@@ -77,7 +77,7 @@ module CPU(Reset, Start, Clk,Ack);
     .Clk       (Clk),
     .AccWrEn,
     .WriteEn   (RegWrEn),
-    .RaddrA    (Instruction[2:0]),
+    .RaddrA    (Instruction[3:0]),
     .DataIn    (RegWriteValue),
     .DataOutA  (ReadA),
     .DataOutB  (ReadB)
@@ -99,7 +99,7 @@ module CPU(Reset, Start, Clk,Ack);
     .InputA(InA),
     .InputB(InB),
     .OverflowIn(OverflowValue),
-    .OP(Instruction[7:4]),
+    .OP(Instr_opcode),
     .Out(ALU_out),
     .OverflowOut(OverflowValueN)
   );
