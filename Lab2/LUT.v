@@ -19,8 +19,8 @@ module LUT(Addr, Target);
   always @*
     case(Addr)		  
       2'b00:    Target = 10'h3ff;  // Ex. -1
-      2'b01:	 Target = 10'h003;
-      2'b10:	 Target = 10'h007;
+      2'b01:	  Target = 10'h003;
+      2'b10:	  Target = 10'h007;
       default:  Target = 10'h001;
     endcase
 

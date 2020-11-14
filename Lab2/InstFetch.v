@@ -9,30 +9,30 @@
 
 
 	 
-module InstFetch(Reset,Start,Clk,BranchAbs,BranchRelEn,ALU_flag,Target,ProgCtr);
+module InstFetch(Reset,Start,Clk,Branch,Target,ProgCtr);
 
-  input              Reset,			   // reset, init, etc. -- force PC to 0 
-                     Start,			   // begin next program in series
-                     Clk,			      // PC can change on pos. edges only
-                     BranchAbs,	       // jump unconditionally to Target value	   
-                     BranchRelEn,	   // jump conditionally to Target + PC
-                     ALU_flag;		   // flag from ALU, e.g. Zero, Carry, Overflow, Negative (from ARM)
-  input       [10:0] Target;		      // jump ... "how high?"
-  output reg  [10:0] ProgCtr ;            // the program counter register itself
+  input              Reset,			  // reset, init, etc. -- force PC to 0 
+                     Start,			  // begin next program in series
+                     Clk,			    // PC can change on pos. edges only
+                     Branch,	  // jump unconditionally to Target value
+  input       [7:0] Target;		  // jump ... "how high?"
+  output reg  [10:0] ProgCtr;		// the program counter register itself
+
+	// sign extend for branching
+	wire [10:0] offset;
+	assign offset = Target[7:7] ? {3'b111,Target} : {3'b000,Target};
   
   //// program counter can clear to 0, increment, or jump
 	always @(posedge Clk)
 	begin 
 		if(Reset)
 		  ProgCtr <= 0;				        // for first program; want different value for 2nd or 3rd
-		else if(Start)						     // hold while start asserted; commence when released
+		else if(Start)						    // hold while start asserted; commence when released
 		  ProgCtr <= ProgCtr;
-		else if(BranchAbs)	              // unconditional absolute jump
-		  ProgCtr <= Target;
-		else if(BranchRelEn && ALU_flag)   // conditional relative jump
-		  ProgCtr <= Target + ProgCtr;
+		else if(Branch)	              // relative branch
+		  ProgCtr <= ProgCtr + offset;
 		else
-		  ProgCtr <= ProgCtr+'b1; 	        // default increment (no need for ARM/MIPS +4. Pop quiz: why?)
+		  ProgCtr <= ProgCtr+'b1;			// default increment (no need for ARM/MIPS +4. Pop quiz: why?)
 	end
 
 endmodule
