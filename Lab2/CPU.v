@@ -25,6 +25,7 @@ module CPU(Reset, Start, Clk,Ack);
   wire [ 7:0] ReadA, ReadB;  // reg_file outputs
   wire [ 7:0] InA, InB, 	   // ALU operand inputs
               ALU_out;       // ALU result
+  wire [ 7:0] LookupValue;   // lookup value
   wire [ 7:0] RegWriteValue, // data in to reg file
               MemWriteValue, // data in to data_memory
               MemReadValue;  // data out from data_memory
@@ -34,6 +35,8 @@ module CPU(Reset, Start, Clk,Ack);
               LookUp,        // use lookup table
               IsOverflow,    // 1 if overflow else 0
               AccWrEn,       // write to accumulator
+              Halt,          // halt program
+              MemToReg,      // store data_memory in reg
               BranchEn;	     // to program counter: branch enable
   reg  [15:0] CycleCt;	     // standalone; NOT PC!
 
@@ -46,7 +49,7 @@ module CPU(Reset, Start, Clk,Ack);
     .Branch      (BranchEn),  // branch enable
     .Target      (Instruction[7:0]),
     .ProgCtr     (PgmCtr  )	   // program count = index to instruction memory
-    );	
+  );
 
   // Control decoder
   Ctrl Ctrl1 (
@@ -58,14 +61,16 @@ module CPU(Reset, Start, Clk,Ack);
     .MemRead,
     .IsOverflow,
     .AccWrEn,
-    .LookUp
-    );
+    .LookUp,
+    .MemToReg,
+    .Halt
+  );
   
   // instruction ROM
   InstROM IR1(
     .InstAddress   (PgmCtr), 
     .InstOut       (Instruction)
-    );
+  );
     
   assign LoadInst = Instruction[8:6]==3'b110;  // calls out load specially
   
@@ -79,20 +84,23 @@ module CPU(Reset, Start, Clk,Ack);
   // Width of register is 8 bits, do not modify
   RegFile #(.W(8),.D(4)) RF1 (
     .Clk       (Clk),
-    .WriteEn   (RegWrEn), 
-    .RaddrA    (Instruction[5:3]),         
-    .RaddrB    (Instruction[2:0]), 
-    .Waddr     (Instruction[5:3]), 	       
-    .DataIn    (RegWriteValue), 
-    .DataOutA  (ReadA), 
+    .AccWrEn,
+    .WriteEn   (RegWrEn),
+    .RaddrA    (Instruction[2:0]),
+    .DataIn    (RegWriteValue),
+    .DataOutA  (ReadA),
     .DataOutB  (ReadB)
-    );
-    
-  assign InA = ReadA;						                       // connect RF out to ALU in
-  assign InB = ReadB;
+  );
+  
+  LUT lut1(
+    .Addr   (Instruction[3:0]),
+    .Target (LookupValue)
+  );
+
+  assign InA = ReadA;						                             // connect RF out to ALU in
+  assign InB = LookUp ? LookupValue : ReadB;                 // either the immediate value or the register value
   assign Instr_opcode = Instruction[7:4];
-  assign MemWrite = (Instruction == 9'h111);                 // mem_store command
-  assign RegWriteValue = LoadInst? MemReadValue : ALU_out;  // 2:1 switch into reg_file
+  assign RegWriteValue = MemToReg ? MemReadValue : ALU_out;  // either the ALU output or the MemReadValue
 
   // Arithmetic Logic Unit
   ALU ALU1(
@@ -100,17 +108,18 @@ module CPU(Reset, Start, Clk,Ack);
     .InputB(InB),
     .OP(Instruction[7:4]),
     .Out(ALU_out),
-    );
-     
+  );
+
   // Data Memory
   DataMem DM1(
     .DataAddress  (ReadA),
     .WriteEn      (MemWrite),
+    .ReadEn       (MemRead),
     .DataIn       (MemWriteValue),
     .DataOut      (MemReadValue),
     .Clk 		      (Clk),
     .Reset		    (Reset)
-    );
+  );
 
 // count number of instructions executed
 // Help you with debugging
