@@ -10,24 +10,180 @@
 // outputs to program_counter (fetch unit)
 // There may be more outputs going to other modules
 
-module Ctrl (Instruction, Jump, BranchEn);
+module Ctrl (Instruction, BranchEn, RegWrEn, MemWrite, MemRead, IsOverflow, AccWrEn, LookUp);
 
   input[ 8:0] Instruction;	   // machine code
-  output reg  Jump,
+  output reg  RegWrEn,
+              MemWrite,
+              MemRead,
+              IsOverflow,
+              AccWrEn,
+              LookUp,
               BranchEn;
 
-  // jump on right shift that generates a zero
   always@*
   begin
-    if(Instruction[2:0] ==  3'b111) // assuming 111 is your jump instruction
-     Jump = 1;
-    else
-     Jump = 0;
-     
-     if(Instruction[2:0] ==  3'b110 /*AND some other conditions are true*/) // assuming 110 is your branch instruction
-     BranchEn = 1;
-    else
-     BranchEn = 0;     
+    if(Instruction[8:8] ==  1'b1) // check type bit
+      RegWrEn = 0;
+      BranchEn = 0;
+      MemWrite = 0;
+      MemRead = 0;
+      IsOverflow = 0;
+      AccWrEn = 0;
+      LookUp = 1;
+    else begin
+      case (Instruction[7:4])
+        // add
+        4'b0000: begin
+          RegWrEn = 0;
+          BranchEn = 0;
+          MemWrite = 0;
+          MemRead = 0;
+          IsOverflow = 0;
+          AccWrEn = 1;
+          LookUp = 0;
+        end
+        // sub
+        4'b0001: begin
+          RegWrEn = 0;
+          BranchEn = 0;
+          MemWrite = 0;
+          MemRead = 0;
+          IsOverflow = 0;
+          AccWrEn = 1;
+          LookUp = 0;
+        end
+        // load
+        4'b0010: begin
+          RegWrEn = 0;
+          BranchEn = 0;
+          MemWrite = 0;
+          MemRead = 1;
+          IsOverflow = 0;
+          AccWrEn = 1;
+          LookUp = 0;
+        end
+        // store
+        4'b0010: begin
+          RegWrEn = 0;
+          BranchEn = 0;
+          MemWrite = 1;
+          MemRead = 0;
+          IsOverflow = 0;
+          AccWrEn = 0;
+          LookUp = 0;
+        end
+        // mov
+        4'b0010: begin
+          RegWrEn = 0;
+          BranchEn = 0;
+          MemWrite = 0;
+          MemRead = 0;
+          IsOverflow = 0;
+          AccWrEn = 1;
+          LookUp = 0;
+        end
+        // cpy
+        4'b0010: begin
+          RegWrEn = 1;
+          BranchEn = 0;
+          MemWrite = 0;
+          MemRead = 0;
+          IsOverflow = 0;
+          AccWrEn = 0;
+          LookUp = 0;
+        end
+        // nand
+        4'b0010: begin
+          RegWrEn = 0;
+          BranchEn = 0;
+          MemWrite = 0;
+          MemRead = 0;
+          IsOverflow = 0;
+          AccWrEn = 1;
+          LookUp = 0;
+        end
+        // or
+        4'b0010: begin
+          RegWrEn = 0;
+          BranchEn = 0;
+          MemWrite = 0;
+          MemRead = 0;
+          IsOverflow = 0;
+          AccWrEn = 1;
+          LookUp = 0;
+        end
+        // sll
+        4'b0010: begin
+          RegWrEn = 0;
+          BranchEn = 0;
+          MemWrite = 0;
+          MemRead = 0;
+          IsOverflow = 0;
+          AccWrEn = 1;
+          LookUp = 0;
+        end
+        // slr
+        4'b0010: begin
+          RegWrEn = 0;
+          BranchEn = 0;
+          MemWrite = 0;
+          MemRead = 0;
+          IsOverflow = 0;
+          AccWrEn = 1;
+          LookUp = 0;
+        end
+        // rst
+        4'b0010: begin
+          RegWrEn = 0;
+          BranchEn = 0;
+          MemWrite = 0;
+          MemRead = 0;
+          IsOverflow = 1;
+          AccWrEn = 0;
+          LookUp = 0;
+        end
+        // halt
+        4'b0010: begin
+          RegWrEn = 0;
+          BranchEn = 0;
+          MemWrite = 0;
+          MemRead = 0;
+          IsOverflow = 0;
+          AccWrEn = 0;
+          LookUp = 0;
+        end
+        // bne
+        4'b0010: begin
+          RegWrEn = 0;
+          BranchEn = 1;
+          MemWrite = 0;
+          MemRead = 0;
+          IsOverflow = 0;
+          AccWrEn = 0;
+          LookUp = 0;
+        end
+        // lt
+        4'b0010: begin
+          RegWrEn = 0;
+          BranchEn = 0;
+          MemWrite = 0;
+          MemRead = 0;
+          IsOverflow = 0;
+          AccWrEn = 1;
+          LookUp = 0;
+        end
+        // eql
+        4'b0010: begin
+          RegWrEn = 0;
+          BranchEn = 0;
+          MemWrite = 0;
+          MemRead = 0;
+          IsOverflow = 0;
+          AccWrEn = 1;
+          LookUp = 0;
+        end
+    end
   end
 
 endmodule
