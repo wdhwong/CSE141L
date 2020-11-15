@@ -16,7 +16,7 @@ module CPU(Reset, Start, Clk,Ack);
   input Clk;			// clock -- posedge used inside design
   output reg Ack;   // done flag from DUT
 
-  wire [10:0] PgmCtr;        // program counter
+  wire [ 9:0] PgmCtr;        // program counter
   wire [ 8:0] Instruction;   // our 9-bit instruction
   wire [ 7:4] Instr_opcode;  // out 3-bit opcode
   wire [ 7:0] AccReg, DstReg;// reg_file outputs
@@ -45,7 +45,7 @@ module CPU(Reset, Start, Clk,Ack);
     .Start       (Start),
     .Clk         (Clk),
     .Branch      (BranchEn),  // branch enable
-    .Target      (Instruction[7:0]),
+    .Target      ({1'b1, Instruction}),
     .ProgCtr     (PgmCtr)	   // program count = index to instruction memory
   );
 

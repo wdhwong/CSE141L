@@ -21,8 +21,6 @@ reg OverflowIn;
 wire[7:0] OUT;
 wire OverflowOut; 
 
-wire Zero;    
-
 reg [ 7:0] expected;
 reg expectedOverflow;
 reg [7:0] sub;
@@ -34,8 +32,7 @@ ALU uut(
   .OP(op),
   .OverflowIn(OverflowIn),
   .Out(OUT),
-  .OverflowOut(OverflowOut),	
-  .Zero(Zero)
+  .OverflowOut(OverflowOut)
 );
 	 
 initial begin

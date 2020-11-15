@@ -6,32 +6,28 @@
 // Comment:
 // This module does not actually fetch the actual code
 // It is responsible for providing which line number will be read next
-	 
+
 module InstFetch(Reset,Start,Clk,Branch,Target,ProgCtr);
 
-  input             Reset,			  // reset, init, etc. -- force PC to 0 
-                    Start,			  // begin next program in series
-                    Clk,			    // PC can change on pos. edges only
-                    Branch;	  // jump unconditionally to Target value
-  input       [7:0] Target;		  // jump ... "how high?"
-  output reg  [10:0] ProgCtr;		// the program counter register itself
+  input             Reset,      // reset, init, etc. -- force PC to 0 
+                    Start,      // begin next program in series
+                    Clk,        // PC can change on pos. edges only
+                    Branch;     // jump unconditionally to Target value
+  input       [ 9:0] Target;    // jump ... "how high?"
+  output reg  [ 9:0] ProgCtr;   // the program counter register itself
 
-	// sign extend for branching
-	wire [10:0] offset;
-	assign offset = Target[7:7] ? {3'b111,Target} : {3'b000,Target};
-  
   //// program counter can clear to 0, increment, or jump
-	always @(posedge Clk)
-	begin 
-		if(Reset)
-		  ProgCtr <= 0;				        // for first program; want different value for 2nd or 3rd
-		else if(Start)						    // hold while start asserted; commence when released
-		  ProgCtr <= ProgCtr;
-		else if(Branch)
-		  ProgCtr <= offset;
-		else
-		  ProgCtr <= ProgCtr+'b1;			// default increment (no need for ARM/MIPS +4. Pop quiz: why?)
-	end
+  always @(posedge Clk)
+  begin 
+    if(Reset)
+      ProgCtr <= 0;               // for first program; want different value for 2nd or 3rd
+    else if(Start)                // hold while start asserted; commence when released
+      ProgCtr <= ProgCtr;
+    else if(Branch)
+      ProgCtr <= Target;
+    else
+      ProgCtr <= ProgCtr+'b1;     // default increment (no need for ARM/MIPS +4. Pop quiz: why?)
+  end
 
 endmodule
 /* Note about Start: if your programs are spread out, with a gap in your machine code listing, you will want 
