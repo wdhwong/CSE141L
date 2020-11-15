@@ -5,8 +5,8 @@ reg Reset;
 reg Start;
 reg Clk;
 reg Branch;
-reg [9:0] Target;
-wire [9:0] PC;
+reg [8:0] Target;
+wire [8:0] PC;
 
 // Testing IF
 InstFetch uut(
