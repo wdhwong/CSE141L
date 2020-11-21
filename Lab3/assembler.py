@@ -111,11 +111,11 @@ if __name__ == '__main__':
       if line.startswith('#') or line == "\n":
         continue
 
-      lineCount += 1
       line = line.rstrip()
 
       # Label
       if line.count(':') > 0:
         lineNumber = LABEL_TABLE[line[:line.index(':')]]
       else:
+        lineCount += 1
         op = line.split(" ")[0]
