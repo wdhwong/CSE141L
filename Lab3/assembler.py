@@ -15,10 +15,10 @@ OP_TABLE = {
   'slr': 9,
   'rst': 10,
   'halt': 11,
-  'str': 12,
+  'bne': 12,
   'lt': 13,
   'eql': 14,
-  'bne': 256
+  'str': 1
 }
 
 # Registers for our CPU
@@ -65,7 +65,7 @@ LOOK_UP_TABLE = {
 LABEL_TABLE = {}
 
 def intToBinary(i):
-  return "{0:b}".format(i)
+  return "{0:b}".format(i).zfill(9)
 
 if __name__ == '__main__':
   args = sys.argv
@@ -104,18 +104,23 @@ if __name__ == '__main__':
 
   # Start writing out binary instructions
   with open(args[1], 'r') as input_file, open(args[2], 'w') as output_file:
-    lineCount = 0
     lines = input_file.readlines()
     for line in lines:
-      # Skip comments and blank lines
-      if line.startswith('#') or line == "\n":
+      # Skip comments and blank lines and labels
+      if line.startswith('#') or line == "\n" or line.count(':') > 0:
         continue
 
       line = line.rstrip()
 
-      # Label
-      if line.count(':') > 0:
-        lineNumber = LABEL_TABLE[line[:line.index(':')]]
+      op = line.split(" ")[0]
+      if op in ['str']:
+        continue
+      reg = ''
+      if len(line.split(" ")) > 1 and line.split(" ")[1] in REGISTER_TABLE:
+        reg = line.split(" ")[1]
+      if reg != '':
+        print(intToBinary(OP_TABLE[op] << 4 | REGISTER_TABLE[reg]), op, reg)
+      elif op == 'bne':
+        print(intToBinary(OP_TABLE[op] << 4), op, line.split(" ")[1])
       else:
-        lineCount += 1
-        op = line.split(" ")[0]
+        print(intToBinary(OP_TABLE[op] << 4), op)
