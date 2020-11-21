@@ -17,7 +17,7 @@ module CPU(Reset, Start, Clk,Ack);
   output reg Ack;   // done flag from DUT
 
   wire [ 8:0] PgmCtr;        // program counter
-  wire [ 7:0] Instruction;   // our 9-bit instruction
+  wire [ 8:0] Instruction;   // our 9-bit instruction
   wire [ 7:4] Instr_opcode;  // out 3-bit opcode
   wire [ 7:0] AccReg, DstReg;// reg_file outputs
   wire [ 7:0] InA, InB, 	   // ALU operand inputs
