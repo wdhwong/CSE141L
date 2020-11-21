@@ -15,9 +15,10 @@ OP_TABLE = {
   'slr': 9,
   'rst': 10,
   'halt': 11,
-  'bne': 12,
+  'str': 12,
   'lt': 13,
-  'eql': 14
+  'eql': 14,
+  'bne': 256
 }
 
 # Registers for our CPU
@@ -40,18 +41,81 @@ REGISTER_TABLE = {
   '$r15': 15
 }
 
-# LUT
+# LUT for various used values
 LOOK_UP_TABLE = {
-
+  '0': 0,
+  '1': 1,
+  '2': 2,
+  '3': 3,
+  '4': 4,
+  '5': 5,
+  '6': 6,
+  '7': 7,
+  '8': 8,
+  '9': 9,
+  '10': 10,
+  '11': 11,
+  '12': 12,
+  '13': 13,
+  '14': 14,
+  '15': 15
 }
 
 # Label table storing line number
 LABEL_TABLE = {}
 
+def intToBinary(i):
+  return "{0:b}".format(i)
+
 if __name__ == '__main__':
   args = sys.argv
   if len(args) != 3:
-    print("py assembler.py <input_file> <output_file>")
+    print("Usage: python3 assembler.py <input_file> <output_file>")
     sys.exit(0)
 
-  print(args)
+  # Get labels and check ISA instructions to make sure it is correct
+  with open(args[1], 'r') as input_file:
+
+    lineCount = 0
+    
+    lines = input_file.readlines()
+    for line in lines:
+      # Skip comments and blank lines
+      if line.startswith('#') or line == "\n":
+        continue
+
+      line = line.rstrip()
+
+      # Label
+      if line.count(':') > 0:
+        label = line[:line.index(':')]
+        LABEL_TABLE[label] = lineCount
+      else:
+        lineCount += 1
+        op = line.split(" ")[0]
+        if op not in OP_TABLE:
+          print("Unknown instruction op: {}".format(op))
+          sys.exit(0)
+        if op not in ['halt', 'rst', 'bne', 'str']:
+          reg = line.split(" ")[1]
+          if reg not in REGISTER_TABLE:
+            print("Unknown register reg: {}".format(reg))
+            sys.exit(0)
+
+  # Start writing out binary instructions
+  with open(args[1], 'r') as input_file, open(args[2], 'w') as output_file:
+    lineCount = 0
+    lines = input_file.readlines()
+    for line in lines:
+      # Skip comments and blank lines
+      if line.startswith('#') or line == "\n":
+        continue
+
+      lineCount += 1
+      line = line.rstrip()
+
+      # Label
+      if line.count(':') > 0:
+        lineNumber = LABEL_TABLE[line[:line.index(':')]]
+      else:
+        op = line.split(" ")[0]
