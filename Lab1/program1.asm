@@ -22,7 +22,7 @@ str 9        # load data_memory[9] into $r2
 load $r0
 cpy $r2
 # unsigned int result = 0; $r3 and $r4
-$r3 = 0
+# $r3 = 0
 # unsigned int count = 1; $r5 and $r6
 str 1
 cpy $r6
