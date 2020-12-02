@@ -15,9 +15,10 @@ OP_TABLE = {
   'slr': 9,
   'rst': 10,
   'halt': 11,
-  'bne': 12,
+  'lkup': 12,
   'lt': 13,
-  'eql': 14
+  'eql': 14,
+  'bne': 1
 }
 
 # Registers for our CPU
@@ -40,18 +41,101 @@ REGISTER_TABLE = {
   '$r15': 15
 }
 
-# LUT
+# LUT for hardcoded numbers like 128, 16, etc
 LOOK_UP_TABLE = {
-
+  '0': 1,
+  '1': 2,
+  '2': 4,
+  '3': 8,
+  '4': 9,
+  '5': 10,
+  '6': 11,
+  '7': 128,
+  '8': 16,
+  '9': -1,
+  '10': -1,
+  '11': -1,
+  '12': -1,
+  '13': -1,
+  '14': -1,
+  '15': -1
 }
 
 # Label table storing line number
 LABEL_TABLE = {}
 
+def intToBinary(i):
+  return "{0:b}".format(i).zfill(9)
+
 if __name__ == '__main__':
   args = sys.argv
   if len(args) != 3:
-    print("py assembler.py <input_file> <output_file>")
+    print("Usage: python3 assembler.py <input_file> <output_file>")
     sys.exit(0)
 
-  print(args)
+  print ("Printing cleaned up assembly")
+
+  # Get labels and check ISA instructions to make sure it is correct
+  with open(args[1], 'r') as input_file:
+
+    lineCount = 0
+    
+    lines = input_file.readlines()
+    for line in lines:
+      # Skip comments and blank lines
+      if line.startswith('#') or line == "\n":
+        continue
+
+      # Remove newline delimiter
+      line = line.rstrip()
+
+      # Label
+      if line.count(':') > 0:
+        label = line[:line.index(':')]
+        LABEL_TABLE[label] = lineCount + 1
+      else:
+        lineCount += 1
+        op = line.split(" ")[0]
+        if op not in OP_TABLE:
+          print("Unknown instruction op: {}".format(op))
+          sys.exit(0)
+        if op not in ['halt', 'rst', 'bne', 'lkup']:
+          reg = line.split(" ")[1]
+          if reg not in REGISTER_TABLE:
+            print("Unknown register reg: {}".format(reg))
+            sys.exit(0)
+
+    print ("Label Table: {}".format(LABEL_TABLE))
+
+  print ("Writing machine code")
+
+  # Start writing out binary instructions
+  with open(args[1], 'r') as input_file, open(args[2], 'w') as output_file:
+    lines = input_file.readlines()
+    for line in lines:
+      # Skip comments and blank lines and labels
+      if line.startswith('#') or line == "\n" or line.count(':') > 0:
+        continue
+
+      # Remove newline delimiter
+      line = line.rstrip()
+
+      op = line.split(" ")[0]
+      if op in ['str']:
+        continue
+      reg = ''
+      if len(line.split(" ")) > 1 and line.split(" ")[1] in REGISTER_TABLE:
+        reg = line.split(" ")[1]
+      if reg != '':
+        print(intToBinary(OP_TABLE[op] << 4 | REGISTER_TABLE[reg]), op, reg)
+        output_file.write(intToBinary(OP_TABLE[op] << 4 | REGISTER_TABLE[reg]))
+      elif op == 'lkup':
+        print(intToBinary(OP_TABLE[op] << 4 | int(line.split(" ")[1])), op, line.split(" ")[1])
+        output_file.write(intToBinary(OP_TABLE[op] << 4 | int(line.split(" ")[1])))
+      elif op == 'bne':
+        print(intToBinary(OP_TABLE[op] << 8 | LABEL_TABLE[line.split(" ")[1]]), op, line.split(" ")[1])
+        output_file.write(intToBinary(OP_TABLE[op] << 8 | LABEL_TABLE[line.split(" ")[1]]))
+      else:
+        print(intToBinary(OP_TABLE[op] << 4), op)
+        output_file.write(intToBinary(OP_TABLE[op] << 4))
+      output_file.write("\n")

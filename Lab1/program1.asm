@@ -15,22 +15,21 @@
 # r14 = 1
 # r15 = overflow
 # unsigned int value; $r1 and $r2
-str 8        # load data_memory[8] into $r1
+lkup 3        # load data_memory[8] into $r1
 load $r0
 cpy $r1
-str 9        # load data_memory[9] into $r2
+lkup 4        # load data_memory[9] into $r2
 load $r0
 cpy $r2
 # unsigned int result = 0; $r3 and $r4
-$r3 = 0
+# $r3 = 0
 # unsigned int count = 1; $r5 and $r6
-str 1
+lkup 0
 cpy $r6
 # unsigned int digits = 0; $r7
-str 1
+lkup 0
 cpy $r13
-
-str 16
+lkup 8
 cpy $r8
 OUTER: 
 # Do counter + (-value)
@@ -101,9 +100,9 @@ lt $r8       # compare 16 to accumulator
 bne OUTER    # loop to OUTER while digits < 16
 
 # Store result in data_memory[10]/data_memory[11]
-str 10
+lkup 5
 cpy $r9
-str 11
+lkup 6
 cpy $r10
 mov $r3
 store $r9
