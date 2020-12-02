@@ -26,11 +26,11 @@ module Ctrl (Instruction, BranchEn, RegWrEn, MemWrite, MemRead, IsOverflow, AccW
   begin
     if(Instruction[8:8] ==  1'b1) begin // check type bit
       RegWrEn = 0;
-      BranchEn = 0;
+      BranchEn = 1;
       MemWrite = 0;
       MemRead = 0;
       IsOverflow = 0;
-      AccWrEn = 1;
+      AccWrEn = 0;
       LookUp = 0;
       Ack = 0;
     end else begin
@@ -167,14 +167,14 @@ module Ctrl (Instruction, BranchEn, RegWrEn, MemWrite, MemRead, IsOverflow, AccW
           LookUp = 0;
           Ack = 1;
         end
-        // bne
+        // lookup
         4'b0010: begin
           RegWrEn = 0;
-          BranchEn = 1;
+          BranchEn = 0;
           MemWrite = 0;
           MemRead = 0;
           IsOverflow = 0;
-          AccWrEn = 0;
+          AccWrEn = 1;
           LookUp = 1;
           Ack = 0;
         end
