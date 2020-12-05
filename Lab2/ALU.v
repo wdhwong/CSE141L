@@ -21,6 +21,7 @@ module ALU(InputA,InputB,OP,OverflowIn,Out,OverflowOut);
   always@* // always_comb in systemverilog
   begin 
     Out = 0;
+    OverflowOut = OverflowIn;
     case (OP)
     // add
     4'b0000: {OverflowOut, Out} = InputA + InputB + OverflowIn;
@@ -46,7 +47,7 @@ module ALU(InputA,InputB,OP,OverflowIn,Out,OverflowOut);
     4'b1010: OverflowOut = 1'b0;
     // halt
     4'b1011: ;
-    // LUT for branching
+    // LUT
     4'b1100: Out = InputB;
     // lt
     4'b1101:
@@ -65,7 +66,7 @@ module ALU(InputA,InputB,OP,OverflowIn,Out,OverflowOut);
       else
         Out = 8'b00000000;
     end
-    default: Out = 0;
+    default:;
     endcase
   end
 

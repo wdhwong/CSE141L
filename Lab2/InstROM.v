@@ -14,7 +14,7 @@
 
 module InstROM (InstAddress, InstOut);
 
-  input       [11-1:0] InstAddress;
+  input       [10-1:0] InstAddress;
   output reg  [8:0] InstOut;
 
 // Instruction format: {4bit opcode, 3bit rs or rt, 3bit rt, immediate, or branch target}
@@ -40,11 +40,7 @@ module InstROM (InstAddress, InstOut);
 
 // alternative expression
 //   need $readmemh or $readmemb to initialize all of the elements
-  reg[8:0] inst_rom[(2**11)-1:0];
+  reg[8:0] inst_rom[(2**10)-1:0];
   always@* InstOut = inst_rom[InstAddress];
- 
-  initial begin		                  // load from external text file
-    $readmemb("machine_code.txt",inst_rom);
-  end 
   
 endmodule

@@ -14,9 +14,9 @@ module CPU(Reset, Start, Clk,Ack);
   input Reset;		// init/reset, active high
   input Start;		// start next program
   input Clk;			// clock -- posedge used inside design
-  output reg Ack;   // done flag from DUT
+  output Ack;     // done flag from DUT
 
-  wire [ 8:0] PgmCtr;        // program counter
+  wire [ 9:0] PgmCtr;        // program counter
   wire [ 8:0] Instruction;   // our 9-bit instruction
   wire [ 7:4] Instr_opcode;  // out 3-bit opcode
   wire [ 7:0] AccReg, DstReg;// reg_file outputs
@@ -44,7 +44,7 @@ module CPU(Reset, Start, Clk,Ack);
     .Reset    (Reset),
     .Start    (Start),
     .Clk      (Clk),
-    .Branch   (BranchEn),  // branch enable
+    .Branch   (BranchEn && (AccReg != 8'b00000000)),  // branch enable
     .Target   (Instruction[7:0]),
     .ProgCtr  (PgmCtr)	   // program count = index to instruction memory
   );
@@ -74,6 +74,7 @@ module CPU(Reset, Start, Clk,Ack);
   // Modify D = *Number of bits you use for each register*
   // Width of register is 8 bits, do not modify
   RegFile #(.W(8),.D(4)) RF1 (
+    .Reset     (Reset),
     .Clk       (Clk),
     .AccWrEn   (AccWrEn),
     .WriteEn   (RegWrEn),
@@ -127,10 +128,11 @@ module CPU(Reset, Start, Clk,Ack);
 
 // count number of instructions executed
 // Help you with debugging
-  always @(posedge Clk)
+  always @(posedge Clk) begin
     if (Start == 1)	   // if(start)
       CycleCt <= 0;
     else if(Ack == 0)   // if(!halt)
       CycleCt <= CycleCt+16'b1;
+  end
 
 endmodule

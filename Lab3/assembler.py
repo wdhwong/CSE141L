@@ -92,7 +92,7 @@ if __name__ == '__main__':
       # Label
       if line.count(':') > 0:
         label = line[:line.index(':')]
-        LABEL_TABLE[label] = lineCount + 1
+        LABEL_TABLE[label] = lineCount
       else:
         lineCount += 1
         op = line.split(" ")[0]
@@ -121,8 +121,6 @@ if __name__ == '__main__':
       line = line.rstrip()
 
       op = line.split(" ")[0]
-      if op in ['str']:
-        continue
       reg = ''
       if len(line.split(" ")) > 1 and line.split(" ")[1] in REGISTER_TABLE:
         reg = line.split(" ")[1]

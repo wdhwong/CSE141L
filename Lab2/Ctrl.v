@@ -10,7 +10,7 @@
 // outputs to program_counter (fetch unit)
 // There may be more outputs going to other modules
 
-module Ctrl (Instruction, BranchEn, RegWrEn, MemWrite, MemRead, IsOverflow, AccWrEn, LookUp, Ack);
+module Ctrl (Instruction, BranchEn, RegWrEn, MemWrite, MemRead, IsOverflow, AccWrEn, LookUp, MemToReg, Ack);
 
   input[ 8:0] Instruction;	   // machine code
   output reg  RegWrEn,
@@ -20,6 +20,7 @@ module Ctrl (Instruction, BranchEn, RegWrEn, MemWrite, MemRead, IsOverflow, AccW
               AccWrEn,
               LookUp,
               Ack,
+              MemToReg,
               BranchEn;
 
   always@*
@@ -32,6 +33,7 @@ module Ctrl (Instruction, BranchEn, RegWrEn, MemWrite, MemRead, IsOverflow, AccW
       IsOverflow = 0;
       AccWrEn = 0;
       LookUp = 0;
+      MemToReg = 0;
       Ack = 0;
     end else begin
       case (Instruction[7:4])
@@ -44,6 +46,7 @@ module Ctrl (Instruction, BranchEn, RegWrEn, MemWrite, MemRead, IsOverflow, AccW
           IsOverflow = 0;
           AccWrEn = 1;
           LookUp = 0;
+          MemToReg = 0;
           Ack = 0;
         end
         // sub
@@ -55,6 +58,7 @@ module Ctrl (Instruction, BranchEn, RegWrEn, MemWrite, MemRead, IsOverflow, AccW
           IsOverflow = 0;
           AccWrEn = 1;
           LookUp = 0;
+          MemToReg = 0;
           Ack = 0;
         end
         // load
@@ -65,11 +69,12 @@ module Ctrl (Instruction, BranchEn, RegWrEn, MemWrite, MemRead, IsOverflow, AccW
           MemRead = 1;
           IsOverflow = 0;
           AccWrEn = 1;
+          MemToReg = 1;
           LookUp = 0;
           Ack = 0;
         end
         // store
-        4'b0010: begin
+        4'b0011: begin
           RegWrEn = 0;
           BranchEn = 0;
           MemWrite = 1;
@@ -77,10 +82,11 @@ module Ctrl (Instruction, BranchEn, RegWrEn, MemWrite, MemRead, IsOverflow, AccW
           IsOverflow = 0;
           AccWrEn = 0;
           LookUp = 0;
+          MemToReg = 0;
           Ack = 0;
         end
         // mov
-        4'b0010: begin
+        4'b0100: begin
           RegWrEn = 0;
           BranchEn = 0;
           MemWrite = 0;
@@ -88,10 +94,11 @@ module Ctrl (Instruction, BranchEn, RegWrEn, MemWrite, MemRead, IsOverflow, AccW
           IsOverflow = 0;
           AccWrEn = 1;
           LookUp = 0;
+          MemToReg = 0;
           Ack = 0;
         end
         // cpy
-        4'b0010: begin
+        4'b0101: begin
           RegWrEn = 1;
           BranchEn = 0;
           MemWrite = 0;
@@ -99,10 +106,11 @@ module Ctrl (Instruction, BranchEn, RegWrEn, MemWrite, MemRead, IsOverflow, AccW
           IsOverflow = 0;
           AccWrEn = 0;
           LookUp = 0;
+          MemToReg = 0;
           Ack = 0;
         end
         // nand
-        4'b0010: begin
+        4'b0110: begin
           RegWrEn = 0;
           BranchEn = 0;
           MemWrite = 0;
@@ -110,10 +118,11 @@ module Ctrl (Instruction, BranchEn, RegWrEn, MemWrite, MemRead, IsOverflow, AccW
           IsOverflow = 0;
           AccWrEn = 1;
           LookUp = 0;
+          MemToReg = 0;
           Ack = 0;
         end
         // or
-        4'b0010: begin
+        4'b0111: begin
           RegWrEn = 0;
           BranchEn = 0;
           MemWrite = 0;
@@ -121,10 +130,11 @@ module Ctrl (Instruction, BranchEn, RegWrEn, MemWrite, MemRead, IsOverflow, AccW
           IsOverflow = 0;
           AccWrEn = 1;
           LookUp = 0;
+          MemToReg = 0;
           Ack = 0;
         end
         // sll
-        4'b0010: begin
+        4'b1000: begin
           RegWrEn = 0;
           BranchEn = 0;
           MemWrite = 0;
@@ -132,10 +142,11 @@ module Ctrl (Instruction, BranchEn, RegWrEn, MemWrite, MemRead, IsOverflow, AccW
           IsOverflow = 0;
           AccWrEn = 1;
           LookUp = 0;
+          MemToReg = 0;
           Ack = 0;
         end
         // slr
-        4'b0010: begin
+        4'b1001: begin
           RegWrEn = 0;
           BranchEn = 0;
           MemWrite = 0;
@@ -143,10 +154,11 @@ module Ctrl (Instruction, BranchEn, RegWrEn, MemWrite, MemRead, IsOverflow, AccW
           IsOverflow = 0;
           AccWrEn = 1;
           LookUp = 0;
+          MemToReg = 0;
           Ack = 0;
         end
         // rst
-        4'b0010: begin
+        4'b1010: begin
           RegWrEn = 0;
           BranchEn = 0;
           MemWrite = 0;
@@ -154,10 +166,11 @@ module Ctrl (Instruction, BranchEn, RegWrEn, MemWrite, MemRead, IsOverflow, AccW
           IsOverflow = 1;
           AccWrEn = 0;
           LookUp = 0;
+          MemToReg = 0;
           Ack = 0;
         end
         // halt
-        4'b0010: begin
+        4'b1011: begin
           RegWrEn = 0;
           BranchEn = 0;
           MemWrite = 0;
@@ -165,10 +178,11 @@ module Ctrl (Instruction, BranchEn, RegWrEn, MemWrite, MemRead, IsOverflow, AccW
           IsOverflow = 0;
           AccWrEn = 0;
           LookUp = 0;
+          MemToReg = 0;
           Ack = 1;
         end
         // lookup
-        4'b0010: begin
+        4'b1100: begin
           RegWrEn = 0;
           BranchEn = 0;
           MemWrite = 0;
@@ -176,10 +190,11 @@ module Ctrl (Instruction, BranchEn, RegWrEn, MemWrite, MemRead, IsOverflow, AccW
           IsOverflow = 0;
           AccWrEn = 1;
           LookUp = 1;
+          MemToReg = 0;
           Ack = 0;
         end
         // lt
-        4'b0010: begin
+        4'b1101: begin
           RegWrEn = 0;
           BranchEn = 0;
           MemWrite = 0;
@@ -187,10 +202,11 @@ module Ctrl (Instruction, BranchEn, RegWrEn, MemWrite, MemRead, IsOverflow, AccW
           IsOverflow = 0;
           AccWrEn = 1;
           LookUp = 0;
+          MemToReg = 0;
           Ack = 0;
         end
         // eql
-        4'b0010: begin
+        4'b1110: begin
           RegWrEn = 0;
           BranchEn = 0;
           MemWrite = 0;
@@ -198,6 +214,7 @@ module Ctrl (Instruction, BranchEn, RegWrEn, MemWrite, MemRead, IsOverflow, AccW
           IsOverflow = 0;
           AccWrEn = 1;
           LookUp = 0;
+          MemToReg = 0;
           Ack = 0;
         end
       endcase

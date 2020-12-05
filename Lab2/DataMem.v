@@ -44,8 +44,6 @@ module DataMem(Clk,Reset,WriteEn,ReadEn,DataAddress,DataIn,DataOut);
       // you may initialize your memory w/ constants, if you wish
       for(i=0;i<256;i = i + 1)
         Core[i] <= 0;
-        Core[16] <= 254;          // overrides the 0  ***sample only***
-        Core[244] <= 5;			      //    likewise
     end else if(WriteEn) 
       Core[DataAddress] <= DataIn;
   end

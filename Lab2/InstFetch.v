@@ -13,11 +13,11 @@ module InstFetch(Reset,Start,Clk,Branch,Target,ProgCtr);
                     Start,      // begin next program in series
                     Clk,        // PC can change on pos. edges only
                     Branch;     // jump unconditionally to Target value
-  input       [ 8:0] Target;    // jump ... "how high?"
-  output reg  [ 8:0] ProgCtr;   // the program counter register itself
+  input       [ 7:0] Target;    // jump ... "how high?"
+  output reg  [ 9:0] ProgCtr;   // the program counter register itself
 
-  wire [8:0] extendedProgCtr;
-  assign extendedProgCtr = Target[8:8] ? {1'b1, Target} : {1'b0, Target};
+  wire [9:0] extendedProgCtr;
+  assign extendedProgCtr = Target[7:7] ? {2'b11, Target} : {2'b00, Target};
 
   //// program counter can clear to 0, increment, or jump
   always @(posedge Clk)
@@ -27,7 +27,7 @@ module InstFetch(Reset,Start,Clk,Branch,Target,ProgCtr);
     else if(Start)                // hold while start asserted; commence when released
       ProgCtr <= ProgCtr;
     else if(Branch)
-      ProgCtr <= ProgCtr + extendedProgCtr;
+      ProgCtr <= extendedProgCtr;
     else
       ProgCtr <= ProgCtr+'b1;     // default increment (no need for ARM/MIPS +4. Pop quiz: why?)
   end

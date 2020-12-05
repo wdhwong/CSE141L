@@ -11,19 +11,22 @@
 /* parameters are compile time directives 
        this can be an any-size reg_file: just override the params!
 */
-module RegFile (Clk,WriteEn,RaddrA,RaddrB,Waddr,DataIn,DataOutA,DataOutB);
+module RegFile (Clk,Reset,WriteEn,AccWrEn,RaddrA,RaddrB,DataIn,DataOutA,DataOutB);
   parameter W=8, D=4;  // W = data path width (Do not change); D = pointer width (You may change)
   input   Clk,
+          Reset,
+          AccWrEn,
           WriteEn;
   input   [D-1:0] RaddrA,				  // address pointers
-          RaddrB,
-          Waddr;
+                  RaddrB;
   input        [W-1:0] DataIn;
   output reg   [W-1:0] DataOutA;
   output reg   [W-1:0] DataOutB;
 
 // W bits wide [W-1:0] and 2**4 registers deep 	 
 reg [W-1:0] Registers[(2**D)-1:0];	  // or just registers[16-1:0] if we know D=4 always
+
+integer i;
 
 // NOTE:
 // READ is combinational
@@ -37,7 +40,14 @@ end
 
 // sequential (clocked) writes
 always @ (posedge Clk)
-  if (WriteEn)	                             // works just like data_memory writes
-    Registers[Waddr] <= DataIn;
+begin
+  if (Reset) begin
+    for(i=0;i<(2**D);i=i+1)
+      Registers[i] <= 0;
+  end else if (WriteEn)	           // works just like data_memory writes
+    Registers[RaddrB] <= DataIn;
+  else if (AccWrEn)
+    Registers[RaddrA] <= DataIn;
+end
 
 endmodule

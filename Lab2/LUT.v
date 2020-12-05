@@ -13,7 +13,7 @@
 //  in general, Output = f(Input); 
 module LUT(Addr, Target);
   
-  input       [ 4:0] Addr;
+  input       [ 3:0] Addr;
   output reg  [ 7:0] Target;
 
   always @*

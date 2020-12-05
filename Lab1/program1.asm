@@ -31,6 +31,8 @@ lkup 0
 cpy $r13
 lkup 8
 cpy $r8
+lkup 0
+cpy $r14
 OUTER: 
 # Do counter + (-value)
 # convert value to two's complement representation (flip and add 1)
@@ -96,6 +98,7 @@ SKIP_UPPER_R:
 # digits++;
 mov $r7
 add $r14
+cpy $r7
 lt $r8       # compare 16 to accumulator
 bne OUTER    # loop to OUTER while digits < 16
 
