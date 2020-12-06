@@ -1,19 +1,3 @@
-# r0 = accumulator
-# r1 = data_memory[8]
-# r2 = data_memory[9]
-# r3 = upper_result
-# r4 = lower_result
-# r5 = upper_count
-# r6 = lower_count
-# r7 = digits
-# r8 = 16
-# r9 = 0
-# r10 = 0
-# r11 = 0
-# r12 = upper_temp
-# r13 = lower_temp
-# r14 = 1
-# r15 = 0
 lkup 3        # load data_memory[8] into $r1
 load $r0
 cpy $r1
@@ -28,19 +12,19 @@ lkup 0        # 1
 cpy $r14
 lkup 9        # 7
 cpy $r9
-OUTER: 
+OUTER:
+rst
 mov $r2       # lower temp = lower count - lower value
 nand $r0
 add $r14
 add $r6
 cpy $r13
-mov $r1       # upper temp = upper count - upper value
+mov $r1       # upper temp = upper count - upper value ; upper count + (-value)
 nand $r0
-add $r14
 add $r5
 cpy $r12
 rst
-mov $r12      # if !(upper_temp < 0) => if upper_temp >= 0
+mov $r12      # if (upper_temp < 0) => if upper_temp >= 0
 lt $r11
 bne SKIP_IF
 mov $r4       # result |= 1;
@@ -54,7 +38,7 @@ SKIP_IF:
 mov $r5           # left shift upper count by 1
 sll $r14
 cpy $r5
-mov $r6           # get top bit
+mov $r6           # get top bit of lower count
 slr $r9
 nand $r14         # and with 1
 nand $r0
@@ -75,6 +59,27 @@ cpy $r3
 mov $r4         # shift lower result by 1
 sll $r14
 cpy $r4
+mov $r2       # lower temp = lower count - lower value
+nand $r0
+add $r14
+add $r6
+cpy $r13
+mov $r1       # upper temp = upper count - upper value ; upper count + (-value)
+nand $r0
+add $r5
+cpy $r12
+rst
+mov $r12      # if (upper_temp < 0) => if upper_temp >= 0
+lt $r11
+bne SKIP_IF2
+mov $r4       # result |= 1;
+or $r14
+cpy $r4
+mov $r12      # upper count = upper temp
+cpy $r5
+mov $r13      # lower count = lower temp
+cpy $r6
+SKIP_IF2:
 mov $r7       # digits++
 add $r14
 cpy $r7

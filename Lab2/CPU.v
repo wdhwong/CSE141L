@@ -129,27 +129,27 @@ module CPU(Reset, Start, Clk,Ack);
 // count number of instructions executed
 // Help you with debugging
   always @(posedge Clk) begin
-    if(Instruction[8:8] ==  1'b1) begin
-      $display("%t bne %d", $time, Instruction[7:0]);
-    end else begin
-      case (Instruction[7:4])
-        0: $display("%t add %d %d - %d", $time, InA, InB, ALU_out);
-        1: $display("%t sub %d %d - %d", $time, InA, InB, ALU_out);
-        2: $display("%t load %d - %d", $time, InB, MemReadValue);
-        3: $display("%t store %d - %d", $time, InB, MemWriteValue);
-        4: $display("%t mov %d - %d", $time, InB, AccReg);
-        5: $display("%t cpy %d - %d", $time, InB, AccReg);
-        6: $display("%t nand %b %b - %b", $time, InA, InB, ALU_out);
-        7: $display("%t or %b %b - %b", $time, InA, InB, ALU_out);
-        8: $display("%t sll %b %b - %b", $time, InA, InB, ALU_out);
-        9: $display("%t slr %b %b - %b", $time, InA, InB, ALU_out);
-        10: $display("%t rst", $time);
-        11: $display("%t halt", $time);
-        12: $display("%t lkup %d - %d", $time, InB, AccReg);
-        13: $display("%t lt %d %d - %d", $time, InA, InB, ALU_out);
-        14: $display("%t eql %d %d - %d", $time, InA, InB, ALU_out);
-      endcase
-    end
+    // if(Instruction[8:8] ==  1'b1) begin
+    //   $display("%t %d bne %d", $time, PgmCtr, Instruction[7:0]);
+    // end else begin
+    //   case (Instruction[7:4])
+    //     0: $display("%t %d add %b %b - %b", $time, PgmCtr, InA, InB, ALU_out);
+    //     1: $display("%t %d sub %b %b - %b", $time, PgmCtr,InA, InB, ALU_out);
+    //     2: $display("%t %d load %b - %b", $time, PgmCtr, InB, MemReadValue);
+    //     3: $display("%t %d store %b - %b", $time, PgmCtr, InB, MemWriteValue);
+    //     4: $display("%t %d mov %b - %b", $time, PgmCtr, InB, AccReg);
+    //     5: $display("%t %d cpy %b - %b", $time, PgmCtr, InB, AccReg);
+    //     6: $display("%t %d nand %b %b - %b", $time, PgmCtr,InA, InB, ALU_out);
+    //     7: $display("%t %d or %b %b - %b", $time, PgmCtr,InA, InB, ALU_out);
+    //     8: $display("%t %d sll %b %b - %b", $time, PgmCtr,InA, InB, ALU_out);
+    //     9: $display("%t %d slr %b %b - %b", $time, PgmCtr,InA, InB, ALU_out);
+    //     10: $display("%t %d rst", $time, PgmCtr);
+    //     11: $display("%t %d halt", $time, PgmCtr);
+    //     12: $display("%t %d lkup %d - %d", $time, PgmCtr, InB, AccReg);
+    //     13: $display("%t %d lt %b %b - %b", $time, PgmCtr, InA, InB, ALU_out);
+    //     14: $display("%t %d eql %b %b - %b", $time, PgmCtr, InA, InB, ALU_out);
+    //   endcase
+    // end
     if (Start == 1)	   // if(start)
       CycleCt <= 0;
     else if(Ack == 0)   // if(!halt)

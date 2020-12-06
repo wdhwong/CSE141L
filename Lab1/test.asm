@@ -1,14 +1,30 @@
+# r0 = accumulator
+# r1 = data_memory[8]
+# r2 = data_memory[9]
+# r3 = upper_result
+# r4 = lower_result
+# r5 = upper_count
+# r6 = lower_count
+# r7 = digits
+# r8 = 16
+# r9 = 0
+# r10 = 0
+# r11 = 0
+# r12 = upper_temp
+# r13 = lower_temp
+# r14 = 1
+# r15 = 0
 lkup 3        # load data_memory[8] into $r1
 load $r0
-cpy $r3
+cpy $r1
 lkup 4        # load data_memory[9] into $r2
 load $r0
-cpy $r4
+cpy $r2
 lkup 0       #1
 cpy $r14
 lkup 8       #16
 cpy $r8
-lkup 0
+lkup 0       #lower count = 1
 cpy $r6
 lkup 9
 cpy $r9
