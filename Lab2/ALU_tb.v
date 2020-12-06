@@ -36,6 +36,7 @@ ALU uut(
 );
 	 
 initial begin
+	OverflowIn = 0;
 	// add
 	INPUTA = 1;
 	INPUTB = 1; 
@@ -65,7 +66,7 @@ initial begin
 	test_alu_func; // void function call
 	#5;
 	// sll
-	INPUTA = 1;
+	INPUTA = 8'b10000000;
 	INPUTB = 1; 
 	op= 'b1000;
 	assign sub = INPUTA - INPUTB;
@@ -79,8 +80,8 @@ initial begin
 	test_alu_func; // void function call
 	#5;
 	// lt
-	INPUTA = 1;
-	INPUTB = 1; 
+	INPUTA = 0;
+	INPUTB = 3;
 	op= 'b1101;
 	assign sub = INPUTA - INPUTB;
 	test_alu_func; // void function call
@@ -128,9 +129,9 @@ initial begin
 		end
 	  endcase
 	  #1; if(expected == OUT) begin
-			$display("%t YAY!! inputs = %h %h, opcode = %b, Zero %b",$time, INPUTA,INPUTB,op, Zero);
+			$display("%t YAY!! inputs = %h %h, opcode = %b, result = %b %b",$time, INPUTA,INPUTB,op, expectedOverflow, expected);
 		end else begin 
-			$display("%t FAIL! inputs = %h %h, opcode = %b, zero %b",$time, INPUTA,INPUTB,op, Zero);
+			$display("%t FAIL! inputs = %h %h, opcode = %b, result = %b %b",$time, INPUTA,INPUTB,op, expectedOverflow, expected);
 		end
 	end
 	endtask

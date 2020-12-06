@@ -40,11 +40,7 @@ module DataMem(Clk,Reset,WriteEn,ReadEn,DataAddress,DataIn,DataOut);
   and go straight to if(WriteEn) ...
 */
   begin
-    if(Reset) begin
-      // you may initialize your memory w/ constants, if you wish
-      for(i=0;i<256;i = i + 1)
-        Core[i] <= 0;
-    end else if(WriteEn) 
+    if(WriteEn) 
       Core[DataAddress] <= DataIn;
   end
 endmodule

@@ -27,7 +27,7 @@ module LUT(Addr, Target);
       4'b0110:    Target = 8'b00001011; // 11
       4'b0111:    Target = 8'b01111111; // 127
       4'b1000:    Target = 8'b00010000; // 16
-      4'b1001:    Target = 8'b11111111;
+      4'b1001:    Target = 8'b00000111; // 7
       4'b1010:    Target = 8'b11111111;
       4'b1011:    Target = 8'b11111111;
       4'b1100:    Target = 8'b11111111;

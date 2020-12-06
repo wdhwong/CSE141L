@@ -13,97 +13,74 @@
 # r12 = upper_temp
 # r13 = lower_temp
 # r14 = 1
-# r15 = overflow
-# unsigned int value; $r1 and $r2
+# r15 = 0
 lkup 3        # load data_memory[8] into $r1
 load $r0
 cpy $r1
 lkup 4        # load data_memory[9] into $r2
 load $r0
 cpy $r2
-# unsigned int result = 0; $r3 and $r4
-# $r3 = 0
-# unsigned int count = 1; $r5 and $r6
-lkup 0
+lkup 0        # lower count = 1; $r5 and $r6
 cpy $r6
-# unsigned int digits = 0; $r7
-lkup 0
-cpy $r13
-lkup 8
+lkup 8        # 16
 cpy $r8
-lkup 0
+lkup 0        # 1
 cpy $r14
+lkup 9        # 7
+cpy $r9
 OUTER: 
-# Do counter + (-value)
-# convert value to two's complement representation (flip and add 1)
-mov $r2
+mov $r2       # lower temp = lower count - lower value
 nand $r0
 add $r14
-# add lower 8 bits of counter to lower 8 bits of value and save carry bit
-add $r2
+add $r6
 cpy $r13
-# add upper 8 bits of counter to upper 8 bits of value and carry bit => store into temp
-mov $r1
+mov $r1       # upper temp = upper count - upper value
 nand $r0
-add $r15 # add overflow bit
-rst
+add $r14
+add $r5
 cpy $r12
-
-# compare upper_temp to 0 and lower_temp to 0 (counter + -value >= 0)
-# if upper_temp < 0 (same as opposite temp >= 0)
-mov $r12
+rst
+mov $r12      # if !(upper_temp < 0) => if upper_temp >= 0
 lt $r11
 bne SKIP_IF
-#    result |= 1;
-mov $r4
+mov $r4       # result |= 1;
 or $r14
 cpy $r4
-#    count = temp;
-mov $r12
+mov $r12      # upper count = upper temp
 cpy $r5
-mov $r13
+mov $r13      # lower count = lower temp
 cpy $r6
-#}
-
 SKIP_IF:
-# Shift counter left by one bit (also handle carry bit)
-# count <<= 1;
-mov $r6
+mov $r5           # left shift upper count by 1
+sll $r14
+cpy $r5
+mov $r6           # get top bit
+slr $r9
+nand $r14         # and with 1
+nand $r0
+or $r5
+cpy $r5
+mov $r6           # left shift lower count by 1
 sll $r14
 cpy $r6
-mov $r15
-eql $r14
-bne SKIP_UPPER_C # no overflow from carry bit
-mov $r5
+mov $r3          # shift upper result by 1
 sll $r14
-or $r14
-cpy $r5
-rst
-
-SKIP_UPPER_C:
-# Shift result left by one bit (also handle carry bit)
-# result <<= 1;
-mov $r4
+cpy $r3
+mov $r4          # get top bit of lower result
+slr $r9
+nand $r14        # and with 1
+nand $r0
+or $r3
+cpy $r3
+mov $r4         # shift lower result by 1
 sll $r14
 cpy $r4
-mov $r15
-bne SKIP_UPPER_R    # no overflow from carry bit
-mov $r3             # shift upper result by 1
-sll $r14
-or $r14
-cpy $r5
-rst
-
-SKIP_UPPER_R:
-# digits++;
-mov $r7
+mov $r7       # digits++
 add $r14
 cpy $r7
 lt $r8       # compare 16 to accumulator
 bne OUTER    # loop to OUTER while digits < 16
-
-# Store result in data_memory[10]/data_memory[11]
-lkup 5
+lkup 5       # Store result in data_memory[10]/data_memory[11]
 cpy $r9
 lkup 6
 cpy $r10
