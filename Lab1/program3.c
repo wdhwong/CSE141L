@@ -1,9 +1,9 @@
 #include "stdio.h"
 
-void printBits(char *str, unsigned char value)
+void printBits(char *str, unsigned int value)
 {
     printf("%s", str);
-    for (int i = 7; i >= 0; i--)
+    for (int i = 15; i >= 0; i--)
     {
         printf("%d", (value >> i) & 1);
     }
@@ -77,6 +77,17 @@ void squareRoot() {
     printf("%d\n", A);
 }
 
+void squareRoot2() {
+    unsigned int x = 16;
+    unsigned int A = 1;
+    while (A * A <= x) {
+        A += 1;
+    }
+    A -= 1;
+    printBits("Result: ", A);
+}
+
 int main(int argc, char *argv[]) {
-    squareRoot();
+    // squareRoot();
+    squareRoot2();
 }
