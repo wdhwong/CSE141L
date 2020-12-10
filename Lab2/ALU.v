@@ -15,9 +15,6 @@ module ALU(InputA,InputB,OP,OverflowIn,Out,OverflowOut);
   output reg [7:0] Out; // logic in SystemVerilog
   output reg OverflowOut;
 
-  wire [7:0] sub;
-  assign sub = InputA - InputB;
-
   always@* // always_comb in systemverilog
   begin 
     Out = 0;
@@ -26,7 +23,7 @@ module ALU(InputA,InputB,OP,OverflowIn,Out,OverflowOut);
     // add
     4'b0000: {OverflowOut, Out} = InputA + InputB + OverflowIn;
     // sub
-    4'b0001: Out = sub;
+    4'b0001: {OverflowOut, Out} = InputA + ~InputB + 8'd1 - OverflowIn;
     // load
     4'b0010: Out = InputB;
     // store
@@ -53,7 +50,7 @@ module ALU(InputA,InputB,OP,OverflowIn,Out,OverflowOut);
     4'b1101:
     begin
       // InputA < InputB so sub has overflow
-      if (sub[7:7] == 1'b1)
+      if (InputA[7:7] == 1 || InputA < InputB)
         Out = 8'b00000001;
       else
         Out = 8'b00000000;
@@ -61,11 +58,13 @@ module ALU(InputA,InputB,OP,OverflowIn,Out,OverflowOut);
     // eql
     4'b1110:
     begin
-      if (sub == 8'b00000000)
+      if (InputA == InputB)
         Out = 8'b00000001;
       else
         Out = 8'b00000000;
     end
+    // not
+    4'b1111: Out = ~InputB;
     default:;
     endcase
   end

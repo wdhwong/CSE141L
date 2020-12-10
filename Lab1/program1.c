@@ -45,11 +45,14 @@ void multiplicativeInverse()
     // cpy $r5
     // OUTER: 
     while (digits < 16) {
+        if (digits != 16) {
+            result <<= 1;
+        }
         // Do counter + (-value) >= 0
         // convert value to two's complement representation (flip and add 1)
         // add lower 8 bits of counter to lower 8 bits of value and save carry bit
         // add upper 8 bits of counter to upper 8 bits of value and carry bit => store into temp
-        if ((count - value) >= 0) {
+        if (count >= value) {
             result |= 1;
             // set counter to temp
             count -= value;
@@ -57,13 +60,17 @@ void multiplicativeInverse()
         // Shift counter left by one bit (also handle carry bit)
         count <<= 1;
         // Shift result left by one bit (also handle carry bit)
-        result <<= 1;
+        // result <<= 1;
         digits++;
 
 
         // mov $r4      load digits into accumulator
         // lt $r5       compare digits to accumulator
         // bne OUTER    loop to OUTER if accumulator is 1 else continue
+    }
+
+    if (count >= value) {
+        result |= 1;
     }
 
     // Store result in data_memory[10]/data_memory[11]

@@ -13,15 +13,29 @@ cpy $r14
 lkup 9        # 7
 cpy $r9
 OUTER:
+mov $r7       # if digits != 16
+sub $r8
+eql $r15
+bne NEXT
+mov $r3          # shift upper result by 1
+sll $r14
+cpy $r3
+mov $r4          # get top bit of lower result
+slr $r9
+nand $r14        # and with 1
+nand $r0
+or $r3
+cpy $r3
+mov $r4         # shift lower result by 1
+sll $r14
+cpy $r4
+NEXT:
 rst
-mov $r2       # lower temp = lower count - lower value
-nand $r0
-add $r14
-add $r6
+mov $r6       # lower temp = lower count - lower value
+sub $r2
 cpy $r13
-mov $r1       # upper temp = upper count - upper value ; upper count + (-value)
-nand $r0
-add $r5
+mov $r5       # upper temp = upper count - upper value ; upper count + (-value)
+sub $r1
 cpy $r12
 rst
 mov $r12      # if (upper_temp < 0) => if upper_temp >= 0
@@ -47,39 +61,6 @@ cpy $r5
 mov $r6           # left shift lower count by 1
 sll $r14
 cpy $r6
-mov $r3          # shift upper result by 1
-sll $r14
-cpy $r3
-mov $r4          # get top bit of lower result
-slr $r9
-nand $r14        # and with 1
-nand $r0
-or $r3
-cpy $r3
-mov $r4         # shift lower result by 1
-sll $r14
-cpy $r4
-mov $r2       # lower temp = lower count - lower value
-nand $r0
-add $r14
-add $r6
-cpy $r13
-mov $r1       # upper temp = upper count - upper value ; upper count + (-value)
-nand $r0
-add $r5
-cpy $r12
-rst
-mov $r12      # if (upper_temp < 0) => if upper_temp >= 0
-lt $r11
-bne SKIP_IF2
-mov $r4       # result |= 1;
-or $r14
-cpy $r4
-mov $r12      # upper count = upper temp
-cpy $r5
-mov $r13      # lower count = lower temp
-cpy $r6
-SKIP_IF2:
 mov $r7       # digits++
 add $r14
 cpy $r7

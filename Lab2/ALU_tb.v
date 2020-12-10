@@ -23,7 +23,6 @@ wire OverflowOut;
 
 reg [ 7:0] expected;
 reg expectedOverflow;
-reg [7:0] sub;
  
 // CONNECTION
 ALU uut(
@@ -41,56 +40,48 @@ initial begin
 	INPUTA = 1;
 	INPUTB = 1; 
 	op= 'b0000;
-	assign sub = INPUTA - INPUTB;
 	test_alu_func; // void function call
 	#5;
 	// sub
 	INPUTA = 1;
 	INPUTB = 1; 
 	op= 'b0001;
-	assign sub = INPUTA - INPUTB;
 	test_alu_func; // void function call
 	#5;
 	// nand
 	INPUTA = 1;
 	INPUTB = 1; 
 	op= 'b0110;
-	assign sub = INPUTA - INPUTB;
 	test_alu_func; // void function call
 	#5;
 	// or
 	INPUTA = 1;
 	INPUTB = 1; 
 	op= 'b0111;
-	assign sub = INPUTA - INPUTB;
 	test_alu_func; // void function call
 	#5;
 	// sll
 	INPUTA = 8'b10000000;
 	INPUTB = 1; 
 	op= 'b1000;
-	assign sub = INPUTA - INPUTB;
 	test_alu_func; // void function call
 	#5;
 	// srl
 	INPUTA = 1;
 	INPUTB = 1; 
 	op= 'b1001;
-	assign sub = INPUTA - INPUTB;
 	test_alu_func; // void function call
 	#5;
 	// lt
 	INPUTA = 0;
 	INPUTB = 3;
 	op= 'b1101;
-	assign sub = INPUTA - INPUTB;
 	test_alu_func; // void function call
 	#5;
 	// eql
 	INPUTA = 1;
 	INPUTB = 1; 
 	op= 'b1110;
-	assign sub = INPUTA - INPUTB;
 	test_alu_func; // void function call
 	#5;
 	end
@@ -101,7 +92,7 @@ initial begin
 		// add
 		4'b0000: {expectedOverflow, expected} = INPUTA + INPUTB + OverflowIn;
 		// sub
-		4'b0001: expected = sub;
+		4'b0001: {expectedOverflow, expected} = INPUTA + ~INPUTB + 1 - OverflowIn;
 		// nand
 		4'b0110: expected = ~(INPUTA & INPUTB);
 		// or
@@ -114,7 +105,7 @@ initial begin
 		4'b1101:
 		begin
 			// InputA < InputB so sub has overflow
-			if (sub[7:7] == 1'b1)
+			if (INPUTA[7:7] == 1 || INPUTA < INPUTB)
 				expected = 8'b00000001;
 			else
 				expected = 8'b00000000;
@@ -122,7 +113,7 @@ initial begin
 		// eql
 		4'b1110:
 		begin
-			if (sub == 8'b00000000)
+			if (INPUTA == INPUTB)
 				expected = 8'b00000001;
 			else
 				expected = 8'b00000000;
