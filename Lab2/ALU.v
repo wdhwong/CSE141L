@@ -52,7 +52,9 @@ module ALU(InputA,InputB,OP,OverflowIn,Out,OverflowOut);
     4'b1101:
     begin
       // InputA < InputB so sub has overflow
-      if (temp[7:7] == 1)
+      if(InputA == InputB) 
+        Out = 8'b00000000;
+      else if (temp[7:7] == 1)
         Out = 8'b00000001;
       else
         Out = 8'b00000000;
