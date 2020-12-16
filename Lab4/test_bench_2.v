@@ -55,11 +55,14 @@ end
 initial begin
 
 // preload operands and launch program 2
+$display("start program 2");
   #10; start = 1;	
 // The test below is calculating 3/255
 // insert dividend and divisor
   div_in2 = 3;	   	// *** try various values here ***
   divisor2 = 8'hFF;		   // *** try various values here ***
+
+  $readmemb("program2.bin", dut.IR1.inst_rom);
 // *** change names of memory or its guts as needed ***
   dut.DM1.Core[0] = div_in2[15:8];
   dut.DM1.Core[1] = div_in2[ 7:0];
@@ -67,6 +70,7 @@ initial begin
   if(divisor2) div2; 							             // divisor2 is "true" only if nonzero
   else result2 = '1; // same as program 1: limit to max.
   #20; start = 0;
+  #20; init = 0;
   #20; wait(done);
 // *** change names of memory or its guts as needed ***
   result2_DUT[23:16] = dut.DM1.Core[4];

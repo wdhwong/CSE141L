@@ -56,13 +56,17 @@ initial begin
 // preload operands and launch program 3
   #10; start = 1;
 // insert operand
-  dat_in3 = 81;// Max : 65535;		   // *** try various values here ***
+  dat_in3 = 190;// Max : 65535;		   // *** try various values here ***
+
+$readmemb("program3.bin", dut.IR1.inst_rom);
+
 // *** change names of memory or its guts as needed ***
   dut.DM1.Core[16] = dat_in3[15: 8];
   dut.DM1.Core[17] = dat_in3[ 7: 0]; 
   if(dat_in3==0) result3 = 0;   // trap 0 case up front
   else div3;
   #20; start = 0;
+  #20; init = 0;
   #20; wait(done);
 // *** change names of memory or its guts as needed ***
   result3_DUT = dut.DM1.Core[18];     

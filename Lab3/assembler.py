@@ -55,11 +55,11 @@ LOOK_UP_TABLE = {
   '8': 16,
   '9': 7,
   '10': 0,
-  '11': -1,
-  '12': -1,
+  '11': 17,
+  '12': 18,
   '13': -1,
-  '14': -1,
-  '15': -1
+  '14': 5,
+  '15': 6
 }
 
 # Label table storing line number
@@ -80,9 +80,11 @@ if __name__ == '__main__':
   with open(args[1], 'r') as input_file:
 
     lineCount = 0
+    lineCountAsm = 0
     
     lines = input_file.readlines()
     for line in lines:
+      lineCountAsm += 1
       # Skip comments and blank lines
       if line.startswith('#') or line == "\n":
         continue
@@ -99,11 +101,13 @@ if __name__ == '__main__':
         op = line.split(" ")[0]
         if op not in OP_TABLE:
           print("Unknown instruction op: {}".format(op))
+          print(lineCountAsm)
           sys.exit(0)
         if op not in ['halt', 'rst', 'bne', 'lkup']:
           reg = line.split(" ")[1]
           if reg not in REGISTER_TABLE:
             print("Unknown register reg: {}".format(reg))
+            print(lineCountAsm)
             sys.exit(0)
 
     print ("Label Table: {}".format(LABEL_TABLE))

@@ -43,7 +43,7 @@ initial begin
 	test_alu_func; // void function call
 	#5;
 	// sub
-	INPUTA = 1;
+	INPUTA = 193;
 	INPUTB = 1; 
 	op= 'b0001;
 	test_alu_func; // void function call
@@ -73,8 +73,8 @@ initial begin
 	test_alu_func; // void function call
 	#5;
 	// lt
-	INPUTA = 0;
-	INPUTB = 3;
+	INPUTA = 4;
+	INPUTB = 190;
 	op= 'b1101;
 	test_alu_func; // void function call
 	#5;
