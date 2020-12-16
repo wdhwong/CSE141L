@@ -57,7 +57,7 @@ initial begin
   start = 1;
   dividend = 64'h8000_0000_0000_0000;	   // this is 1.000000000
   // *** try various values here ***
-  divisor1 =1024;		// This is testing 1/4, which would produce hex value 2000        
+  divisor1 = 1024;		// This is testing 1/4, which would produce hex value 2000        
 // your memory gets loaded here
   $readmemb("program1.bin", dut.IR1.inst_rom);
 // *** change names of memory or its guts as needed ***

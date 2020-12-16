@@ -78,6 +78,12 @@ initial begin
 	op= 'b1101;
 	test_alu_func; // void function call
 	#5;
+	// sub
+	INPUTA = 4;
+	INPUTB = 190;
+	op= 'b0001;
+	test_alu_func; // void function call
+	#5;
 	// eql
 	INPUTA = 1;
 	INPUTB = 1; 
