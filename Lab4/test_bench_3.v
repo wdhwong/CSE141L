@@ -56,7 +56,7 @@ initial begin
 // preload operands and launch program 3
   #10; start = 1;
 // insert operand
-  dat_in3 = 65025;// Max : 65535;		   // *** try various values here ***
+  dat_in3 = 190;// Max : 65535;		   // *** try various values here ***
 
 $readmemb("program3.bin", dut.IR1.inst_rom);
 
@@ -92,8 +92,8 @@ begin
   result3 = $rtoi(result);
   
   // The following two lines are for rounding. if you want to 'floor' instead, comment the two lines below
-  if(!(&(result3))) 
-    result3 = $rtoi(result+0.5);
+  // if(!(&(result3))) 
+  //   result3 = $rtoi(result+0.5);
 	
 end
 endtask

@@ -217,6 +217,18 @@ module Ctrl (Instruction, BranchEn, RegWrEn, MemWrite, MemRead, IsOverflow, AccW
           MemToReg = 0;
           Ack = 0;
         end
+        // ult
+        4'b1111: begin
+          RegWrEn = 0;
+          BranchEn = 0;
+          MemWrite = 0;
+          MemRead = 0;
+          IsOverflow = 0;
+          AccWrEn = 1;
+          LookUp = 0;
+          MemToReg = 0;
+          Ack = 0;
+        end
       endcase
     end
   end
