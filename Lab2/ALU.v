@@ -55,7 +55,7 @@ module ALU(InputA,InputB,OP,OverflowIn,Out,OverflowOut);
       // InputA < InputB so sub has overflow
       if( InputA == InputB)
         Out = 8'b00000000;
-      else if (InputA < InputB)
+      else if (temp[8:8])
         Out = 8'b00000001;
       else
         Out = 8'b00000000;
@@ -68,8 +68,12 @@ module ALU(InputA,InputB,OP,OverflowIn,Out,OverflowOut);
       else
         Out = 8'b00000000;
     end
-    // not
-    4'b1111: Out = (InputA < InputB) ? 8'b00000001 : 8'b00000000;
+    // ult
+    4'b1111:
+    begin
+      // InputA < InputB
+      Out = (InputA < InputB) ? 8'b00000001 : 8'b0000000;
+    end
     default:;
     endcase
   end
