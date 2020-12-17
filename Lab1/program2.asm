@@ -61,9 +61,9 @@ mov $r10
 lt $r7
 bne SETUP_REMAINDER
 
-#check to make sure i !=16
-mov $r7
-eql $r10
+#check to make sure i !=16 (0-15 = 16 iterations, i = 16 is 17th iteration and will fail 16<16 catch)
+mov $r10
+eql $r12
 bne SETUP_REMAINDER
 
 #if 7 < i is true, branch to use LSB
@@ -108,7 +108,7 @@ mov $r4
 eql $r13
 bne CHECK_DIVISOR
 
-#mov op to accumulator, shift op left by 1
+#op != 0 so mov op to accumulator, shift op left by 1
 mov $r4
 sll $r12
 cpy $r4
@@ -118,6 +118,7 @@ CHECK_DIVISOR:
 mov $r4
 lt $r3
 bne SHIFT_MASK
+
 #if 7 < i is true, branch to use ans2, else use ans1
 lkup 9
 lt $r7
@@ -141,7 +142,6 @@ cpy $r9
 SUBTRACT:
 #op = op - divisor
 mov $r4
-rst
 sub $r3
 cpy $r4
 
@@ -153,7 +153,6 @@ cpy $r5
 
 #increment i++
 mov $r7
-rst
 add $r12
 cpy $r7
 
@@ -195,60 +194,39 @@ bne DONE
 
 # op = op << 1
 mov $r4
-sll $r12
+slr $r12
 cpy $r4
 
-#if divisor < op take branch
-mov $r3
-lt $r4
-bne IF_INSIDE_REMAINDER
+#if op < divisor, skip the if
+mov $r4
+lt $r3
+bne SKIP_IF
 
-#if divisor = op, take branch
-mov $r3
-eql $r4
-bne IF_INSIDE_REMAINDER
-
-#mask = mask >> 1
-mov $r5
-slr $r12
-cpy $r5
-
-#k++
-mov $r7
-rst
-add $r12
-cpy $r7
-
-#branch back to remainder
-mov $r12
-bne REMAINDER
-
-IF_INSIDE_REMAINDER:
 #rem = rem | mask
 mov $r6
 or $r5
 cpy $r6
 
 #op = op - divisor
-mov $r4
-rst
+mov $r4 
 sub $r3
 cpy $r4
 
-#mask = mask >> 1
+SKIP_IF:
+#mask  = mask >> 1
 mov $r5
 slr $r12
 cpy $r5
 
 #k++
 mov $r7
-rst
 add $r12
 cpy $r7
 
-#branch back to remainder
+#branch back to remainder check
 mov $r12
 bne REMAINDER
+
 
 DONE:
 #store ans1 -> mem[4]
