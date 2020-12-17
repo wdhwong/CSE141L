@@ -73,8 +73,8 @@ initial begin
 	test_alu_func; // void function call
 	#5;
 	// lt
-	INPUTA = 4;
-	INPUTB = 190;
+	INPUTA = 144;
+	INPUTB = 0;
 	op= 'b1101;
 	test_alu_func; // void function call
 	#5;
@@ -111,7 +111,7 @@ initial begin
 		4'b1101:
 		begin
 			// InputA < InputB so sub has overflow
-			if (INPUTA[7:7] == 1 || INPUTA < INPUTB)
+			if (INPUTA < INPUTB)
 				expected = 8'b00000001;
 			else
 				expected = 8'b00000000;

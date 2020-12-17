@@ -31,30 +31,38 @@ rst
 mov $r8 # i++
 add $r3
 cpy $r8
+rst
 lt $r4 # whle i < result
 bne SQUARE
 
 mov $r1 # check if msb of x < msb of result  
+rst
 lt $r6
-bne END
+bne SUB_1
 
 mov $r6 # check if msb of x > msb of result
+rst
 lt $r1
 bne LOOP
 
 mov $r7 
+rst
 lt $r2
 bne LOOP
 
 # check if lsb result = lsb x
 mov $r7
 eql $r2
-bne LOOP
+bne END
 
-END:
+SUB_1:
 rst
 mov $r4 # result - 1
 sub $r3
+cpy $r4
+
+END:
+mov $r4
 store $r15 # store in datamemory[18]
 halt
 

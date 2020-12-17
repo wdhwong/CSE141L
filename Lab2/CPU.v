@@ -148,6 +148,7 @@ module CPU(Reset, Start, Clk,Ack);
          12: $display("%t %d lkup %d - %d", $time, PgmCtr, InB, AccReg);
          13: $display("%t %d lt %b %b - %b", $time, PgmCtr, InA, InB, ALU_out);
          14: $display("%t %d eql %b %b - %b", $time, PgmCtr, InA, InB, ALU_out);
+         15: $display("%t %d ult %b %b - %b", $time, PgmCtr, InA, InB, ALU_out);
        endcase
      end
     if (Start == 1)	   // if(start)

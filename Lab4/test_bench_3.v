@@ -56,7 +56,7 @@ initial begin
 // preload operands and launch program 3
   #10; start = 1;
 // insert operand
-  dat_in3 = 190;// Max : 65535;		   // *** try various values here ***
+  dat_in3 = 65025;// Max : 65535;		   // *** try various values here ***
 
 $readmemb("program3.bin", dut.IR1.inst_rom);
 
