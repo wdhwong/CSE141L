@@ -129,6 +129,7 @@ module CPU(Reset, Start, Clk,Ack);
 // count number of instructions executed
 // Help you with debugging
   always @(posedge Clk) begin
+    /*
      if(Instruction[8:8] ==  1'b1) begin
        $display("%t %d bne %d", $time, PgmCtr, Instruction[7:0]);
      end else begin
@@ -151,6 +152,7 @@ module CPU(Reset, Start, Clk,Ack);
          15: $display("%t %d ult %b %b - %b", $time, PgmCtr, InA, InB, ALU_out);
        endcase
      end
+     */
     if (Start == 1)	   // if(start)
       CycleCt <= 0;
     else if(Ack == 0)   // if(!halt)

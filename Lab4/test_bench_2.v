@@ -59,8 +59,8 @@ $display("start program 2");
   #10; start = 1;	
 // The test below is calculating 3/255
 // insert dividend and divisor
-  div_in2 = 385;	   	// *** try various values here ***
-  divisor2 = 6;		   // *** try various values here ***
+  div_in2 = 9;	   	// *** try various values here ***
+  divisor2 = 8;		   // *** try various values here ***
 
   $readmemb("program2.bin", dut.IR1.inst_rom);
 // *** change names of memory or its guts as needed ***
@@ -88,8 +88,8 @@ task automatic div2;
 begin
   dividend = div_in2<<48;
   quotient1 = dividend/divisor2;
-  result2 = quotient1[63:40]+quotient1[39]; // half-LSB upward rounding (Uncomment this line to use rounding)
-  //result2 = quotient1[63:40];                 // No rounding
+  //result2 = quotient1[63:40]+quotient1[39]; // half-LSB upward rounding (Uncomment this line to use rounding)
+  result2 = quotient1[63:40];                 // No rounding
   quotientR = $itor(div_in2)/$itor(divisor2);
 end
 endtask
