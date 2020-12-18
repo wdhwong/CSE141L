@@ -88,8 +88,8 @@ task automatic div2;
 begin
   dividend = div_in2<<48;
   quotient1 = dividend/divisor2;
-  //result2 = quotient1[63:40]+quotient1[39]; // half-LSB upward rounding (Uncomment this line to use rounding)
-  result2 = quotient1[63:40];                 // No rounding
+  result2 = quotient1[63:40]+quotient1[39]; // half-LSB upward rounding (Uncomment this line to use rounding)
+  //result2 = quotient1[63:40];                 // No rounding
   quotientR = $itor(div_in2)/$itor(divisor2);
 end
 endtask

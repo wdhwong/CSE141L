@@ -174,13 +174,14 @@ cpy $r5
 lkup 10
 cpy $r7
 
-REMAINDER:
-# while (k < 8 && op !=0)
-
+# if op = 0, no remainder
 # if 0 = op is true, accum = 1, branch to done
 lkup 10
 eql $r4
 bne DONE 
+
+REMAINDER:
+# while (k < 8 && op !=0)
 
 # if 8 < counter is true, branch to done
 mov $r11
@@ -194,7 +195,7 @@ bne DONE
 
 # op = op << 1
 mov $r4
-slr $r12
+sll $r12
 cpy $r4
 
 #if op < divisor, skip the if
